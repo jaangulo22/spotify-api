@@ -21,6 +21,7 @@ return new class extends Migration
 
             // este es para ordenar las canciones en el album
             $table->integer('track_number')->nullable();
+            $table->integer('play_count')->default(0);
 
             $table->timestamps();
         });

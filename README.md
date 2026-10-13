@@ -4,10 +4,10 @@ API del proyecto Spotify desarrollada con Laravel, PostgreSQL, Redis, MongoDB, D
 
 Esta API actualmente permite:
 
-* Registrar usuarios.
-* Iniciar sesión.
-* Generar tokens de autenticación automáticamente.
-* Probar el registro y login desde Postman.
+- Registrar usuarios.
+- Iniciar sesión.
+- Generar tokens de autenticación automáticamente.
+- Probar el registro y login desde Postman.
 
 ---
 
@@ -15,9 +15,10 @@ Esta API actualmente permite:
 
 Antes de comenzar, tener instalado:
 
-* Git
-* Docker Desktop
-* Postman
+- Git
+- Docker Desktop
+- Node.js y npm
+- Postman
 
 Comprobar Git:
 
@@ -29,6 +30,12 @@ Comprobar Docker:
 
 ```powershell
 docker --version
+```
+
+Comprobar npm:
+
+```powershell
+npm --version
 ```
 
 ---
@@ -93,7 +100,25 @@ http://localhost:8000
 
 ---
 
-## 5. Generar la APP_KEY
+## 5. Instalar dependencias
+
+Para instalar las dependencias PHP dentro del contenedor de Docker:
+
+```powershell
+docker compose exec app composer install
+```
+
+*(Si trabajas de forma local sin usar el contenedor de Docker, puedes ejecutar directamente: `composer install`)*
+
+Para instalar las dependencias de Node.js (frontend/assets):
+
+```powershell
+npm install
+```
+
+---
+
+## 6. Generar la APP_KEY
 
 Si el `.env` tiene `APP_KEY` vacío, ejecutar:
 
@@ -103,7 +128,7 @@ docker compose exec app php artisan key:generate
 
 ---
 
-## 6. Ejecutar las migraciones
+## 7. Ejecutar las migraciones
 
 Ejecutar:
 
@@ -115,7 +140,7 @@ Esto crea las tablas necesarias en la base de datos.
 
 ---
 
-## 7. Limpiar la configuración de Laravel
+## 8. Limpiar la configuración de Laravel
 
 Ejecutar:
 
@@ -125,7 +150,7 @@ docker compose exec app php artisan optimize:clear
 
 ---
 
-# 8. Probar el registro en Postman
+## 9. Probar el registro en Postman
 
 Abrir Postman y crear una petición nueva.
 
@@ -187,7 +212,7 @@ El `id` y el `token` serán diferentes para cada usuario.
 
 ---
 
-# 9. Probar el Login en Postman
+## 10. Probar el Login en Postman
 
 Crear otra petición.
 
@@ -240,7 +265,7 @@ Ejemplo:
 
 ---
 
-# 10. Problemas comunes
+## 11. Problemas comunes
 
 ### Docker no está iniciado
 
@@ -283,7 +308,7 @@ POST  api/register
 
 ---
 
-# 11. Importante
+## 12. Importante
 
 No subir ni compartir el archivo:
 
@@ -314,6 +339,8 @@ cd api
 git checkout feature/auth-api
 Copy-Item .env.example .env
 docker compose up -d
+docker compose exec app composer install
+npm install
 docker compose exec app php artisan key:generate
 docker compose exec app php artisan migrate
 docker compose exec app php artisan optimize:clear

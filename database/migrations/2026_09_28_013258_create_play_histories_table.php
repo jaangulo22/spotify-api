@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignUuid('song_id')->constrained('songs')->cascadeOnDelete();
             
             // fecha de reproduccion
-            $table->timestamp('played_at');
+            $table->timestamp('played_at')->useCurrent();;
 
             $table->timestamps();
         });

@@ -15,9 +15,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignId('role_id')->constrained('roles');
             
-            $table->string('name');
+            $table->string('username');
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('avatar_url')->nullable();
             $table->timestamps(); 
         });
     }
