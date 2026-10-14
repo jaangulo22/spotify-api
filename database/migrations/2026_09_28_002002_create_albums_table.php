@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('albums', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('artist_id')->constrained('artists')->cascadeOnDelete();
-            $table->foreignId('genres_id')->constrained('genres');
+            $table->foreignId('genre_id')->constrained('genres');
 
             $table->string('title');
             $table->string('cover_url')->nullable(); 
