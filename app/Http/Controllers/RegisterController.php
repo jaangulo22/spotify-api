@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\UserResource;
 
 class RegisterController extends Controller
 {
@@ -17,12 +18,8 @@ class RegisterController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
-        $role = Role::firstOrCreate([
-            'name' => 'Oyente',
-        ]);
-
         $user = User::create([
-            'role_id' => $role->id,
+            'role_id' => 1,
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -32,7 +29,7 @@ class RegisterController extends Controller
 
         return response()->json([
             'message' => 'Usuario registrado correctamente.',
-            'user' => $user,
+            'user' => new UserResource($user),
             'token' => $token,
         ], 201);
     }

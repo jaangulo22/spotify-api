@@ -7,7 +7,8 @@ Esta API actualmente permite:
 - Registrar usuarios.
 - Iniciar sesión.
 - Generar tokens de autenticación automáticamente.
-- Probar el registro y login desde Postman.
+- Consultar, actualizar y eliminar el perfil del usuario autenticado.
+- Probar las rutas desde Postman.
 
 ---
 
@@ -108,7 +109,7 @@ Para instalar las dependencias PHP dentro del contenedor de Docker:
 docker compose exec app composer install
 ```
 
-*(Si trabajas de forma local sin usar el contenedor de Docker, puedes ejecutar directamente: `composer install`)*
+(Si trabajas de forma local sin usar el contenedor de Docker, puedes ejecutar directamente `composer install`).
 
 Para instalar las dependencias de Node.js (frontend/assets):
 
@@ -128,15 +129,15 @@ docker compose exec app php artisan key:generate
 
 ---
 
-## 7. Ejecutar las migraciones
+## 7. Ejecutar las migraciones y Seeders
 
 Ejecutar:
 
 ```powershell
-docker compose exec app php artisan migrate
+docker compose exec app php artisan migrate:fresh --seed
 ```
 
-Esto crea las tablas necesarias en la base de datos.
+Esto crea las tablas necesarias en la base de datos y ejecuta los Seeders iniciales, creando los roles Oyente, Artista y Administrador, además de usuarios de prueba.
 
 ---
 
@@ -212,7 +213,7 @@ El `id` y el `token` serán diferentes para cada usuario.
 
 ---
 
-## 10. Probar el Login en Postman
+## 10. Probar el login en Postman
 
 Crear otra petición.
 
@@ -265,7 +266,135 @@ Ejemplo:
 
 ---
 
-## 11. Problemas comunes
+## 11. Probar las rutas del perfil (requieren autenticación)
+
+Primero, registra un usuario o inicia sesión y copia el `token` que devuelve la respuesta.
+
+En Postman, configura estos valores en la pestaña **Headers** para cada una de las siguientes peticiones:
+
+- **Key:** `Authorization` | **Value:** `Bearer TU_TOKEN` (reemplaza `TU_TOKEN` por el token copiado).
+- **Key:** `Accept` | **Value:** `application/json`
+
+### A. Ver perfil del usuario
+
+**Método**
+
+```text
+GET
+```
+
+**URL**
+
+```text
+http://localhost:8000/api/user
+```
+
+**Body**
+
+No requiere body.
+
+Presionar **Send**.
+
+Ejemplo de respuesta:
+
+```json
+{
+    "data": {
+        "id": "...",
+        "role_id": 1,
+        "username": "Juanito",
+        "email": "juanito@test.com",
+        "avatar_url": null,
+        "created_at": "...",
+        "updated_at": "..."
+    }
+}
+```
+
+### B. Actualizar perfil
+
+**Método**
+
+```text
+PUT
+```
+
+**URL**
+
+```text
+http://localhost:8000/api/user
+```
+
+**Body**
+
+Seleccionar:
+
+```text
+Body → raw → JSON
+```
+
+Enviar los campos que se quieran actualizar. Se pueden enviar todos o solo algunos:
+
+```json
+{
+    "username": "Juanito Actualizado",
+    "email": "juanito_nuevo@test.com",
+    "avatar_url": "https://ejemplo.com/foto.jpg"
+}
+```
+
+Presionar **Send**.
+
+Ejemplo de respuesta:
+
+```json
+{
+    "message": "Perfil actualizado correctamente.",
+    "user": {
+        "id": "...",
+        "role_id": 1,
+        "username": "Juanito Actualizado",
+        "email": "juanito_nuevo@test.com",
+        "avatar_url": "https://ejemplo.com/foto.jpg",
+        "created_at": "...",
+        "updated_at": "..."
+    }
+}
+```
+
+### C. Eliminar cuenta
+
+**Método**
+
+```text
+DELETE
+```
+
+**URL**
+
+```text
+http://localhost:8000/api/user
+```
+
+**Body**
+
+No requiere body.
+
+Presionar **Send**.
+
+Ejemplo de respuesta:
+
+```json
+{
+    "message": "Cuenta eliminada permanentemente."
+}
+```
+
+Al eliminar la cuenta, el token actual se destruye y ya no sirve para realizar más peticiones.
+
+---
+
+## 12. Problemas comunes
 
 ### Docker no está iniciado
 
@@ -299,16 +428,19 @@ docker compose exec app php artisan optimize:clear
 docker compose exec app php artisan route:list --path=api
 ```
 
-Deben aparecer:
+Deben aparecer, entre otras, las rutas:
 
 ```text
 POST  api/login
 POST  api/register
+GET   api/user
+PUT   api/user
+DELETE api/user
 ```
 
 ---
 
-## 12. Importante
+## 13. Importante
 
 No subir ni compartir el archivo:
 
@@ -342,20 +474,28 @@ docker compose up -d
 docker compose exec app composer install
 npm install
 docker compose exec app php artisan key:generate
-docker compose exec app php artisan migrate
+docker compose exec app php artisan migrate:fresh --seed
 docker compose exec app php artisan optimize:clear
 ```
 
-Después abrir Postman y probar:
+Después abrir Postman y probar el registro:
 
 ```text
 POST http://localhost:8000/api/register
 ```
 
-y:
+y el login:
 
 ```text
 POST http://localhost:8000/api/login
 ```
 
-Con esto se puede comprobar que la autenticación de la API funciona correctamente.
+Después, agregar el token en **Headers** (`Authorization: Bearer TU_TOKEN`) y probar las rutas del perfil:
+
+```text
+GET    http://localhost:8000/api/user
+PUT    http://localhost:8000/api/user
+DELETE http://localhost:8000/api/user
+```
+
+Con esto se puede comprobar el registro, el inicio de sesión y las operaciones del perfil de la API.
