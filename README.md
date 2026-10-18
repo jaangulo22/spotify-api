@@ -179,7 +179,7 @@ Enviar:
 
 ```json
 {
-    "name": "Juanito",
+    "username": "Juanito",
     "email": "juanito@test.com",
     "password": "12345678"
 }
