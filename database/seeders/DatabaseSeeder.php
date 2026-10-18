@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         // este se encarga de ejecutar a otris seeders
         $this->call([
             RoleSeeder::class,
+            GenreSeeder::class,
         ]);
 
         // usuario de prueba para el rol de administrador
