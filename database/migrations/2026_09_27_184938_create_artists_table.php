@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
             
             $table->string('stage_name');
-            $table->string('verification_status')->default('pending');
+            $table->string('verification_status')->default('unverified');
             $table->timestamps();
         });
     }
