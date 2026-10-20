@@ -29,9 +29,9 @@ class SearchController extends Controller
             ->take(10)
             ->get();
 
-return response()->json([
-    'songs' => $songs,
-    'artists' => $artists
-]);
+        return response()->json([
+            'songs' => $songs,
+            'artists' => $artists
+        ]);
     }
 }
