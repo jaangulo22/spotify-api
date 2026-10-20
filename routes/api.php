@@ -7,6 +7,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\SearchController;
 
 Route::post('/login', [LoginController::class, 'login']);
 
@@ -22,3 +23,5 @@ Route::post('/songs', [SongController::class, 'store']);
 Route::post('/albums', [AlbumController::class, 'store']);
 
 Route::post('/artists', [ArtistController::class, 'store']);
+
+Route::get('/search', [SearchController::class, 'index']);
