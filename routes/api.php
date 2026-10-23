@@ -8,10 +8,13 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\SearchController;
 
 // rutas publicas
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register', [RegisterController::class, 'register']);
+Route::get('/search', [SearchController::class, 'index']);
+
 
 // estas rutas si requieren autenticacion
 Route::middleware('auth:sanctum')->group(function () {
