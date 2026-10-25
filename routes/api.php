@@ -9,6 +9,7 @@ use App\Http\Controllers\SongController;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\Admin\ArtistRequestController;
 
 // rutas publicas
 Route::post('/login', [LoginController::class, 'login']);
@@ -32,4 +33,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // creacion de albums
     Route::post('/albums', [AlbumController::class, 'store']);
+
+    // panel del admin donde puede aprobar o rechazar solicitudse de ser artista
+    Route::prefix('admin')->middleware('is_admin')->group(function () {
+        Route::get('/artist-requests', [ArtistRequestController::class, 'index']);
+        Route::put('/artist-requests/{artist}/approve', [ArtistRequestController::class, 'approve']);
+        Route::delete('/artist-requests/{artist}/reject', [ArtistRequestController::class, 'reject']);
+    });
 });
