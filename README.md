@@ -91,19 +91,20 @@ http://localhost:8000
 
 ### C. Catálogo musical (requiere token)
 
-#### 1. Crear un artista
+#### 1. Solicitar ser artista
 
 - **Método:** `POST`
 - **URL:** `http://localhost:8000/api/artists`
 
 ```json
 {
-  "stage_name": "Bad Bunny",
-  "verification_status": "verified"
+  "stage_name": "Bad Bunny"
 }
 ```
 
-#### 2. Crear un álbum
+> **Nota:** La solicitud se crea automáticamente con estado `pending`. El usuario seguirá teniendo el rol de "Oyente" y no podrá subir álbumes ni canciones hasta que un Administrador apruebe su solicitud.
+
+#### 2. Crear un álbum (Solo para artistas verificados)
 
 - **Método:** `POST`
 - **URL:** `http://localhost:8000/api/albums`
@@ -119,7 +120,7 @@ http://localhost:8000
 }
 ```
 
-Reemplaza `TU_UUID_DE_ARTISTA` por el UUID de un artista existente.
+Reemplaza `TU_UUID_DE_ARTISTA` por el UUID de tu artista. El token utilizado debe pertenecer a un usuario cuyo estado sea `verified` y tenga el rol de Artista.
 
 #### 3. Crear y listar canciones
 
@@ -147,7 +148,31 @@ Reemplaza `TU_UUID_DE_ALBUM` por el UUID de un álbum existente.
 
 Devuelve la lista de canciones con la información relacionada del artista y el género, según la respuesta configurada en la API.
 
-### D. Pantalla de inicio y búsqueda
+### D. Panel de Administrador (Flujo de Aprobación de Artistas)
+
+Para probar estas rutas, necesitas un token de administrador. Inicia sesión (`POST /api/login`) con las credenciales creadas por el seeder:
+- **Email:** `admin@test.com`
+- **Password:** `Admin123$`
+
+#### 1. Ver solicitudes de artistas pendientes
+- **Método:** `GET`
+- **URL:** `http://localhost:8000/api/admin/artist-requests`
+
+Lista todos los usuarios que enviaron solicitud para ser artistas. Copia el `id` (UUID del modelo Artist) que aparece en la respuesta para usarlo en los siguientes endpoints.
+
+#### 2. Aprobar solicitud
+- **Método:** `PUT`
+- **URL:** `http://localhost:8000/api/admin/artist-requests/TU_UUID_DE_ARTISTA/approve`
+
+Cambia el estado de la solicitud a `verified` y actualiza el rol del usuario a "Artista", dándole permisos para subir música. (No requiere Body).
+
+#### 3. Rechazar solicitud
+- **Método:** `DELETE`
+- **URL:** `http://localhost:8000/api/admin/artist-requests/TU_UUID_DE_ARTISTA/reject`
+
+Elimina la solicitud de la base de datos, permitiendo que el usuario "Oyente" pueda enviar una nueva solicitud en el futuro. (No requiere Body).
+
+### E. Pantalla de inicio y búsqueda
 
 #### 1. Buscador
 
