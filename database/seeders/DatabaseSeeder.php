@@ -25,8 +25,8 @@ class DatabaseSeeder extends Seeder
         // usuario de prueba para el rol de administrador
         User::create([
             'username' => 'admin_test',
-            'email' => 'test@example.com',
-            'password' => Hash::make('password123'),
+            'email' => 'admin@test.com',
+            'password' => Hash::make('Admin123$'),
             'role_id' => 3,
         ]);
 
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'username' => 'oyente_test',
             'email' => 'oyente@example.com',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('Oyente123$'),
             'role_id' => 1,
         ]);
     }
