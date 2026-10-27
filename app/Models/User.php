@@ -9,7 +9,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Laravel\Sanctum\HasApiTokens;
 
-
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasUuids;
@@ -22,7 +21,7 @@ class User extends Authenticatable
         'password',
     ];
 
-    // etso oculta los datos sencibles de los usuarios
+    // esto oculta los datos sensibles de los usuarios
     protected $hidden = [
         'password',
         'remember_token',
@@ -49,5 +48,10 @@ class User extends Authenticatable
     public function playlists()
     {
         return $this->hasMany(Playlist::class);
+    }
+
+    public function artist()
+    {
+        return $this->hasOne(Artist::class);
     }
 }
