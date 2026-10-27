@@ -38,6 +38,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('admin')->middleware('is_admin')->group(function () {
         Route::get('/artist-requests', [ArtistRequestController::class, 'index']);
         Route::put('/artist-requests/{artist}/approve', [ArtistRequestController::class, 'approve']);
-        Route::delete('/artist-requests/{artist}/reject', [ArtistRequestController::class, 'reject']);
+        Route::patch('/artist-requests/{artist}/reject', [ArtistRequestController::class, 'reject']);
     });
 });
