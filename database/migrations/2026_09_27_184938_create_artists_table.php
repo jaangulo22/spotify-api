@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('artists', function (Blueprint $table) {
             $table->uuid('id')->primary(); 
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
-            
+            $table->foreignUuid('user_id')->nullable()->change();
             $table->string('stage_name');
             $table->string('verification_status')->default('unverified');
             $table->timestamps();
