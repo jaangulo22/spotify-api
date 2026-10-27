@@ -14,6 +14,7 @@ class Artist extends Model
         'user_id',
         'stage_name',
         'verification_status',
+        'rejection_reason',
     ];
     
     // un artista puede tener muchos albunes
@@ -27,5 +28,4 @@ class Artist extends Model
     {
         return $this->belongsTo(User::class);
     }
-
 }
