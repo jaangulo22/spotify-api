@@ -30,6 +30,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // creacion de artista
     Route::post('/artists', [ArtistController::class, 'store']);
+    Route::get('/artists/{artist}', [ArtistController::class, 'show']);
+    Route::put('/artists/{artist}', [ArtistController::class, 'update']);
+    Route::delete('/artists/{artist}', [ArtistController::class, 'destroy']);
 
     // creacion de albums
     Route::post('/albums', [AlbumController::class, 'store']);
