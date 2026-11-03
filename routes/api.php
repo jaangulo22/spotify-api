@@ -28,6 +28,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/songs', [SongController::class, 'index']);
     Route::post('/songs', [SongController::class, 'store']);
 
+    Route::get('/songs/{song}', [SongController::class, 'show']);
+    Route::put('/songs/{song}', [SongController::class, 'update']);
+    Route::delete('/songs/{song}', [SongController::class, 'destroy']);
+
     // creacion de artista
     Route::post('/artists', [ArtistController::class, 'store']);
     Route::get('/artists/{artist}', [ArtistController::class, 'show']);
