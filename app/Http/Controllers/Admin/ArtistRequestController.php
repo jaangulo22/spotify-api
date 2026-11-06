@@ -10,12 +10,16 @@ use Illuminate\Http\Request;
 class ArtistRequestController extends Controller
 {
     // Lista de solicitudes pendientes (solo con user_id activo)
-    public function index()
+    public function index(Request $request)
     {
-        $requests = Artist::with('user')
-            ->where('verification_status', 'pending')
-            ->whereNotNull('user_id')
-            ->get();
+        $query = Artist::withoutGlobalScopes()->with('user');
+
+        // Filtrar directamente en la base de datos según la pestaña elegida
+        if ($request->has('status') && $request->status !== 'all') {
+            $query->where('verification_status', $request->status);
+        }
+
+        $requests = $query->get();
 
         return response()->json([
             'success' => true,
