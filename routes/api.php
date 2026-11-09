@@ -11,6 +11,7 @@ use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ArtistRequestController;
+use App\Http\Controllers\FavoriteController;
 
 // rutas publicas
 Route::post('/login', [LoginController::class, 'login']);
@@ -45,6 +46,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // creacion de albums
     Route::get('/albums', [AlbumController::class, 'index']);
     Route::post('/albums', [AlbumController::class, 'store']);
+
+    // gestion de favoritos (like o me gusta)
+    Route::get('/favorites/songs', [FavoriteController::class, 'index']);
+    Route::post('/favorites/songs/{song}', [FavoriteController::class, 'store']);
+    Route::delete('/favorites/songs/{song}', [FavoriteController::class, 'destroy']);
 
     // panel del admin donde puede aprobar o rechazar solicitudse de ser artista
     Route::prefix('admin')->middleware('is_admin')->group(function () {
