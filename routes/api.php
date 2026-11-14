@@ -12,12 +12,20 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ArtistRequestController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\PlaylistController;
+use App\Models\Genre;
 
 // rutas publicas
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register', [RegisterController::class, 'register']);
 Route::get('/search', [SearchController::class, 'index']);
 
+//Obtener Genneros
+Route::get('/genres', function () {
+return response()->json([
+    'data' => Genre::select('id', 'name')->orderBy('name')->get()
+    ]);
+});
 
 // estas rutas si requieren autenticacion
 Route::middleware('auth:sanctum')->group(function () {
@@ -51,6 +59,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/favorites/songs', [FavoriteController::class, 'index']);
     Route::post('/favorites/songs/{song}', [FavoriteController::class, 'store']);
     Route::delete('/favorites/songs/{song}', [FavoriteController::class, 'destroy']);
+
+    // gestión de playlists
+    Route::get('/playlists', [PlaylistController::class, 'index']);
+    Route::post('/playlists', [PlaylistController::class, 'store']);
+    Route::get('/playlists/{playlist}', [PlaylistController::class, 'show']);
+    Route::delete('/playlists/{playlist}', [PlaylistController::class, 'destroy']);
+
+    // agregar y quitar canciones de una playlist
+    Route::post('/playlists/{playlist}/songs/{song}', [PlaylistController::class, 'addSong']);
+    Route::delete('/playlists/{playlist}/songs/{song}', [PlaylistController::class, 'removeSong']);
 
     // panel del admin donde puede aprobar o rechazar solicitudse de ser artista
     Route::prefix('admin')->middleware('is_admin')->group(function () {
