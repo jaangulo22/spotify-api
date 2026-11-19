@@ -7,6 +7,7 @@ use Illuminate\Validation\Rule;
 use App\Http\Resources\UserResource;
 use App\Models\Artist;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -59,5 +60,23 @@ class UserController extends Controller
         return response()->json([
             'message' => 'Cuenta eliminada permanentemente.',
         ], 200);
+    }
+
+    // actualziar la contraseña del usuario
+    public function updatePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'string', 'current_password'],
+            'password' => ['required', 'string', 'min:8', 'confirmed', 'different:current_password'],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Contraseña actualizada correctamente',
+        ]);
     }
 }
