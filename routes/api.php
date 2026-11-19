@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // gestion del peril del usuario
     Route::get('/user', [UserController::class, 'profile']);
     Route::put('/user', [UserController::class, 'update']);
+    Route::put('/user/password', [UserController::class, 'updatePassword']);
     Route::delete('/user', [UserController::class, 'destroy']);
 
     // gestion de canciones
