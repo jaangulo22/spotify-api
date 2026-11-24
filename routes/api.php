@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ArtistRequestController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\PlaylistController;
 use App\Models\Genre;
+use App\Http\Controllers\PlayHistoryController;
 
 // rutas publicas
 Route::post('/login', [LoginController::class, 'login']);
@@ -71,6 +72,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/playlists/{playlist}/songs/{song}', [PlaylistController::class, 'addSong']);
     Route::delete('/playlists/{playlist}/songs/{song}', [PlaylistController::class, 'removeSong']);
 
+    // historial de reproducciones
+    Route::get('/history', [PlayHistoryController::class, 'index']);
+    Route::post('/history/{song}', [PlayHistoryController::class, 'store']);
+    
     // panel del admin donde puede aprobar o rechazar solicitudse de ser artista
     Route::prefix('admin')->middleware('is_admin')->group(function () {
         Route::get('/artist-requests', [ArtistRequestController::class, 'index']);
