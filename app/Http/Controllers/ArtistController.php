@@ -6,6 +6,8 @@ use App\Models\Artist;
 use Illuminate\Http\Request;
 use App\Http\Resources\ArtistResource;
 use Illuminate\Validation\Rule;
+use App\Models\Song;
+use App\Http\Resources\SongResource;
 
 class ArtistController extends Controller
 {
@@ -79,6 +81,23 @@ class ArtistController extends Controller
             'success' => true,
             'message' => 'Perfil de artista eliminado correctamente'
         ]);
+    }
+
+    // ver todas las canciones de un artista
+    public function songs(Artist $artist)
+    {
+        $songs = Song::with(['album.artist', 'album.genre'])
+            ->whereHas('album', function ($query) use ($artist) {
+                $query->where('artist_id', $artist->id);
+            })
+            ->orderByDesc('created_at')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => SongResource::collection($songs),
+        ]);
+
     }
 
 }
