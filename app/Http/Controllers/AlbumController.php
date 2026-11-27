@@ -67,4 +67,77 @@ class AlbumController extends Controller
             'data'    => new AlbumResource($album),
         ], 201);
     }
+
+    // Obtener un álbum específico
+    public function show(Album $album)
+    {
+        $album->load('artist', 'genre', 'songs');
+
+        return response()->json([
+            'success' => true,
+            'data'    => new AlbumResource($album),
+        ], 200);
+    }
+
+    // Actualizar un álbum
+    public function update(Request $request, Album $album)
+    {
+        $ownerId = $album->artist->user_id;
+
+        if ($request->user()->id !== $ownerId && $request->user()->role_id !== 3) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para modificar este álbum.'
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'genre_id'     => 'sometimes|required|integer|exists:genres,id',
+            'title'        => 'sometimes|required|string|max:255',
+            'cover_url'    => 'nullable|string',
+            'cover_file'   => 'nullable|image|max:10240',
+            'release_date' => 'nullable|date',
+            'album_type'   => 'sometimes|required|string|max:50',
+        ]);
+
+        if ($request->hasFile('cover_file')) {
+            $path = $request->file('cover_file')->store('covers', 'public');
+            $validated['cover_url'] = url(Storage::url($path));
+        }
+
+        if (isset($validated['album_type'])) {
+            $validated['album_type'] = strtolower(trim($validated['album_type']));
+        }
+
+        unset($validated['cover_file']);
+
+        $album->update($validated);
+        $album->load('artist', 'genre');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Álbum actualizado correctamente',
+            'data'    => new AlbumResource($album),
+        ], 200);
+    }
+
+    // Eliminar un álbum (sus canciones se borran por cascadeOnDelete en la BD)
+    public function destroy(Request $request, Album $album)
+    {
+        $ownerId = $album->artist->user_id;
+
+        if ($request->user()->id !== $ownerId && $request->user()->role_id !== 3) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para eliminar este álbum.'
+            ], 403);
+        }
+
+        $album->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Álbum eliminado correctamente'
+        ], 200);
+    }
 }
