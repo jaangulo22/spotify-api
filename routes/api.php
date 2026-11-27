@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/songs', [SongController::class, 'store']);
 
     Route::get('/songs/{song}', [SongController::class, 'show']);
-    Route::put('/songs/{song}', [SongController::class, 'update']);
+    Route::match(['put', 'post', 'patch'], '/songs/{song}', [SongController::class, 'update']);
     Route::delete('/songs/{song}', [SongController::class, 'destroy']);
 
     // creacion de artista
@@ -57,6 +57,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // creacion de albums
     Route::get('/albums', [AlbumController::class, 'index']);
     Route::post('/albums', [AlbumController::class, 'store']);
+    Route::get('/albums/{album}', [AlbumController::class, 'show']);
+    Route::match(['put', 'post', 'patch'], '/albums/{album}', [AlbumController::class, 'update']);
+    Route::delete('/albums/{album}', [AlbumController::class, 'destroy']);
 
     // gestion de favoritos (like o me gusta)
     Route::get('/favorites/songs', [FavoriteController::class, 'index']);
