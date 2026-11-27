@@ -81,7 +81,7 @@ class SongController extends Controller
         // es dueño de la cancion o admin?
         $ownerId = $song->album->artist->user_id;
         
-        if ($request->user()->id !== $ownerId && $request->user()->role_id !== 1) {
+        if ($request->user()->id !== $ownerId && $request->user()->role_id !== 3) {
             return response()->json([
                 'success' => false,
                 'message' => 'No tienes permiso para modificar esta canción.'
@@ -91,12 +91,26 @@ class SongController extends Controller
         $validated = $request->validate([
             'album_id'         => 'sometimes|required|uuid|exists:albums,id',
             'title'            => 'sometimes|required|string|max:255',
-            'duration_seconds' => 'sometimes|required|integer',
-            'audio_url'        => 'sometimes|required|string',
+            'duration_seconds' => 'nullable|integer',
+            'audio_url'        => 'nullable|string',
+            'audio_file'       => 'nullable|file|mimes:mp3,wav,ogg,mpga,m4a|max:51200',
             'track_number'     => 'nullable|integer',
         ]);
 
+        if ($request->hasFile('audio_file')) {
+            $path = $request->file('audio_file')->store('songs', 'public');
+            $validated['audio_url'] = url(Storage::url($path));
+        }
+
+        unset($validated['audio_file']);
+
+        if (array_key_exists('duration_seconds', $validated) && empty($validated['duration_seconds'])) {
+            unset($validated['duration_seconds']);
+        }
+
         $song->update($validated);
+        $song->load('album.artist', 'album.genre');
+
         return response()->json([
             'success' => true,
             'message' => 'Canción actualizada correctamente',
@@ -109,7 +123,7 @@ class SongController extends Controller
         // es dueño de la cancion o admin?
         $ownerId = $song->album->artist->user_id;
         
-        if ($request->user()->id !== $ownerId && $request->user()->role_id !== 1) {
+        if ($request->user()->id !== $ownerId && $request->user()->role_id !== 3) {
             return response()->json([
                 'success' => false,
                 'message' => 'No tienes permiso para eliminar esta canción.'
